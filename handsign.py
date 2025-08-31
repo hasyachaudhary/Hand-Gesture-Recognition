@@ -1,11 +1,8 @@
 # main.py
-"""
-Real-Time Static Hand Gesture Recognition (rules-based, MediaPipe + OpenCV)
-Gesture vocabulary:
- - open_palm, fist, peace (v), thumbs_up, ok, pointing, crossed_fingers
-Author: Your Name
-Run: python main.py
-"""
+# Simple Hand Gesture Recognition using OpenCV + MediaPipe
+# Gestures: Open Palm, Fist, Peace, Thumbs Up, OK, Pointing, Crossed Fingers
+# Author: Hasya
+# Run this file: python main.py
 
 import cv2
 import mediapipe as mp
@@ -13,18 +10,17 @@ import numpy as np
 from collections import deque, Counter
 import time
 
-# ---------- Configuration ----------
+# Camera and detection settings
 CAMERA_ID = 0
 MIN_DETECTION_CONFIDENCE = 0.6
 MIN_TRACKING_CONFIDENCE = 0.6
 
-# Smoothing: require same gesture for N frames before confirming
+# buffer to stabilize predictions
 SMOOTHING_BUFFER = 6
-
-# Minimum normalized distance threshold multiplier for "close" checks (OK, crossed)
+ 
 DISTANCE_THRESHOLD_MULT = 0.18  # fraction of hand bbox diagonal
 
-# ---------- MediaPipe setup ----------
+# MediaPipe setup
 mp_hands = mp.solutions.hands
 mp_drawing = mp.solutions.drawing_utils
 
@@ -35,7 +31,7 @@ hands = mp_hands.Hands(
     min_tracking_confidence=MIN_TRACKING_CONFIDENCE,
 )
 
-# ---------- helper functions ----------
+# helper functions
 def landmark_to_np(landmark_list, image_w, image_h):
     """Convert MediaPipe landmark list to Nx2 numpy array in pixel coords."""
     points = []
@@ -126,7 +122,7 @@ def open_palm_detected(landmarks):
     ])
 
 def fist_detected(landmarks):
-    # all fingers folded -> tips lower than pip (y greater)
+    # all fingers folded -> tips lower than pip
     return all([
         not finger_is_extended(landmarks, INDEX_TIP, INDEX_PIP),
         not finger_is_extended(landmarks, MIDDLE_TIP, MIDDLE_PIP),
@@ -143,7 +139,7 @@ def peace_detected(landmarks):
             and not finger_is_extended(landmarks, PINKY_TIP, PINKY_PIP))
 
 def pointing_detected(landmarks):
-    # index extended, others folded (thumb folded or relaxed)
+    # index extended, others folded
     return (finger_is_extended(landmarks, INDEX_TIP, INDEX_PIP)
             and not finger_is_extended(landmarks, MIDDLE_TIP, MIDDLE_PIP)
             and not finger_is_extended(landmarks, RING_TIP, RING_PIP)
@@ -276,4 +272,5 @@ def main():
         hands.close()
 
 if __name__ == "__main__":
+
     main()
