@@ -2,7 +2,6 @@
 # Simple Hand Gesture Recognition using OpenCV + MediaPipe
 # Gestures: Open Palm, Fist, Peace, Thumbs Up, OK, Pointing, Crossed Fingers
 # Author: Hasya
-# Run this file: python main.py
 
 import cv2
 import mediapipe as mp
@@ -274,3 +273,4 @@ def main():
 if __name__ == "__main__":
 
     main()
+
